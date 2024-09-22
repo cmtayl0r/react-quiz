@@ -17,6 +17,7 @@ const initialState = {
   index: 0, // current question index
   answer: null, // user answer
   points: 0, // user points
+  highscore: 0, // user highscore
 };
 
 function reducer(state, action) {
@@ -59,6 +60,10 @@ function reducer(state, action) {
       return {
         ...state,
         status: "finished", // change status to finished
+        // If user points are higher than highscore, update highscore
+        // else, keep highscore
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
       };
     default:
       throw new Error("Action unknown");
@@ -68,10 +73,8 @@ function reducer(state, action) {
 function App() {
   // Reducer hook to manage state
   // state is destructured immediately to get the current values
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ questions, status, index, answer, points, highscore }, dispatch] =
+    useReducer(reducer, initialState);
 
   const numQuestions = questions.length;
   const maxPoints = questions.reduce(
@@ -120,7 +123,11 @@ function App() {
           </>
         )}
         {status === "finished" && (
-          <FinishScreen points={points} maxPoints={maxPoints} />
+          <FinishScreen
+            points={points}
+            maxPoints={maxPoints}
+            highScore={highscore}
+          />
         )}
       </Main>
     </div>
