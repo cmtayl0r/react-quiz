@@ -1,4 +1,4 @@
-function FinishScreen({ points, maxPoints, highScore }) {
+function FinishScreen({ points, maxPoints, highScore, dispatch }) {
   const percentage = (points / maxPoints) * 100;
 
   let emoji;
@@ -16,6 +16,12 @@ function FinishScreen({ points, maxPoints, highScore }) {
         <strong>{maxPoints}</strong> ({Math.ceil(percentage)}% correct)
       </p>
       <p className="highscore">Highscore: {highScore} points</p>
+      <button
+        className="btn btn-ui"
+        onClick={() => dispatch({ type: "restart" })}
+      >
+        Start again
+      </button>
     </>
   );
 }
