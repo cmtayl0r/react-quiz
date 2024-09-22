@@ -1,6 +1,14 @@
 # The React Quiz
 
+## Description
+
 A Simple Quiz app that provides a series of multi choice questions with a point scoring and timer mechanism.
+
+## Tech Stack
+
+- React
+- Vite for development environment
+- [JSON Server][1] for fake REST API
 
 ## What I learnt
 
@@ -12,3 +20,5 @@ A Simple Quiz app that provides a series of multi choice questions with a point 
 
 - [ ] Collect all answers in an array so a user can review their answers or navigate back to them
 - [ ] Send the high score to the fake data API (JSON server) so a user can retrieve the high score every time they init the app
+
+[1]: https://www.npmjs.com/package/json-server/v/0.17.4
