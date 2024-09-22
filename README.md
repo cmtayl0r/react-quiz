@@ -4,6 +4,9 @@
 
 A Simple Quiz app that provides a series of multi choice questions with a point scoring and timer mechanism.
 
+> [!NOTE]
+> Tutorial initiated project, sourced from The Ultimate React Course
+
 ## Tech Stack
 
 - React
