@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 
 // Components
 import Header from "./components/Header";
@@ -110,10 +110,10 @@ function App() {
   // Fetch data from API
   useEffect(() => {
     fetch("http://localhost:3001/questions")
-      .then(response => response.json())
+      .then((response) => response.json())
       // send payload to reducer
-      .then(data => dispatch({ type: "dataReceived", payload: data }))
-      .catch(error => dispatch({ type: "dataFailed" }));
+      .then((data) => dispatch({ type: "dataReceived", payload: data }))
+      .catch((error) => dispatch({ type: "dataFailed" }));
   }, []);
 
   return (
