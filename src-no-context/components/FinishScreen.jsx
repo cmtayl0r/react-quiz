@@ -1,8 +1,4 @@
-import { useQuiz } from "../contexts/QuizContext";
-
-function FinishScreen() {
-  const { points, maxPoints, highscore, dispatch } = useQuiz();
-
+function FinishScreen({ points, maxPoints, highScore, dispatch }) {
   const percentage = (points / maxPoints) * 100;
 
   let emoji;
@@ -19,7 +15,7 @@ function FinishScreen() {
         {emoji} You scored <strong>{points}</strong> out of{" "}
         <strong>{maxPoints}</strong> ({Math.ceil(percentage)}% correct)
       </p>
-      <p className="highscore">Highscore: {highscore} points</p>
+      <p className="highscore">Highscore: {highScore} points</p>
       <button
         className="btn btn-ui"
         onClick={() => dispatch({ type: "restart" })}

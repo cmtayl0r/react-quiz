@@ -1,10 +1,18 @@
-// Import necessary modules
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
-// 1 - Create a context
-const QuizContext = createContext();
+// Components
+import Header from "./components/Header";
+import Main from "./components/Main";
+import StartScreen from "./components/StartScreen";
+import Question from "./components/Question";
+import NextButton from "./components/NextButton";
+import Loader from "./components/Loader";
+import Error from "./components/Error";
+import Progress from "./components/Progress";
+import FinishScreen from "./components/FinishScreen";
+import Footer from "./components/Footer";
+import Timer from "./components/Timer";
 
-// 2 - Initial state
 const initialState = {
   questions: [],
   status: "loading", // "loading" | "finished" | "error" | "ready" | "active"
@@ -17,7 +25,6 @@ const initialState = {
 
 const SECS_PER_QUESTION = 30;
 
-// 3 - Reducer function
 function reducer(state, action) {
   switch (action.type) {
     case "dataReceived":
@@ -82,23 +89,24 @@ function reducer(state, action) {
         status: state.secondsRemaining === 1 ? "finished" : state.status,
       };
     default:
-      throw new Error(`Unhandled action type: ${action.type}`);
+      throw new Error("Action unknown");
   }
 }
 
-// 4 - Create a provider
-function QuizProvider({ children }) {
-  // STATE
+function App() {
+  // Reducer hook to manage state
+  // state is destructured immediately to get the current values
   const [
     { questions, status, index, answer, points, highscore, secondsRemaining },
     dispatch,
   ] = useReducer(reducer, initialState);
 
-  // DERIVED STATE
   const numQuestions = questions.length;
-  const maxPoints = questions.reduce((prev, cur) => prev + cur.points, 0);
+  const maxPoints = questions.reduce(
+    (acc, question) => acc + question.points,
+    0
+  );
 
-  // EFFECTS
   // Fetch data from API
   useEffect(() => {
     fetch("http://localhost:3001/questions")
@@ -108,37 +116,51 @@ function QuizProvider({ children }) {
       .catch((error) => dispatch({ type: "dataFailed" }));
   }, []);
 
-  // HANDLER FUNCTIONS
-
-  // CONTEXT VALUE
-  const contextValue = {
-    questions,
-    status,
-    index,
-    answer,
-    points,
-    highscore,
-    secondsRemaining,
-    numQuestions,
-    maxPoints,
-    dispatch,
-  };
-
   return (
-    <QuizContext.Provider value={contextValue}>{children}</QuizContext.Provider>
+    <div className="app">
+      <Header />
+      <Main>
+        {status === "loading" && <Loader />}
+        {status === "error" && <Error />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && (
+          <>
+            <Progress
+              index={index + 1}
+              numQuestions={numQuestions}
+              maxPoints={maxPoints}
+              currPoints={points}
+              answer={answer}
+            />
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+            <Footer>
+              <NextButton
+                dispatch={dispatch}
+                answer={answer}
+                index={index}
+                numQuestions={numQuestions}
+              />
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+            </Footer>
+          </>
+        )}
+        {status === "finished" && (
+          <FinishScreen
+            points={points}
+            maxPoints={maxPoints}
+            highScore={highscore}
+            dispatch={dispatch}
+          />
+        )}
+      </Main>
+    </div>
   );
 }
 
-// 5 - Create a custom hook
-function useQuiz() {
-  const context = useContext(QuizContext);
-
-  if (!context) {
-    throw new Error("useQuiz must be used within a QuizProvider");
-  }
-
-  return context;
-}
-
-// 6 - Export the context, provider and custom hook
-export { QuizProvider, useQuiz };
+export default App;

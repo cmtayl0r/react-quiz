@@ -1,8 +1,4 @@
-import { useQuiz } from "../contexts/QuizContext";
-
-function Options({ question }) {
-  const { dispatch, answer } = useQuiz();
-
+function Options({ question, dispatch, answer }) {
   // check if answer is not null, then disable button click
   const hasAnswered = answer !== null;
   return (
